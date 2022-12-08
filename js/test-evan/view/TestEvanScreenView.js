@@ -7,21 +7,13 @@
  */
 
 import ScreenView from '../../../../joist/js/ScreenView.js';
-// import ResetAllButton from '../../../../scenery-phet/js/buttons/ResetAllButton.js';
-// import TestEvanConstants from '../../common/TestEvanConstants.js';
 import testEvan from '../../testEvan.js';
 import Property from '../../../../axon/js/Property.js';
-// import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
-// import TestEvanNode from './TestEvanNode.js';
-// import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
-import { Font, Plane, Text } from '../../../../scenery/js/imports.js';
+import { Circle, Color, Plane, Text } from '../../../../scenery/js/imports.js';
 import Easing from '../../../../twixt/js/Easing.js';
-// import dotRandom from '../../../../dot/js/dotRandom.js';
 import Animation from '../../../../twixt/js/Animation.js';
-import RoundPushButton from '../../../../sun/js/buttons/RoundPushButton.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import RoundToggleButton from '../../../../sun/js/buttons/RoundToggleButton.js';
-
 
 class TestEvanScreenView extends ScreenView {
 
@@ -32,30 +24,45 @@ class TestEvanScreenView extends ScreenView {
 
 
     this.addChild( new Plane() );
-
     // const durationProperty = new Property( 0.5 );
     const easingProperty = new Property( Easing.LINEAR );
-    this.addChild( new Plane() );
     
     //Asteroid property's ( center vertically )8
     const asteroidPositionProperty = new Property( new Vector2( this.layoutBounds.left - 250, 0 ) );
-    const asteroidTextProperty = new Property( new Vector2( this.layoutBounds.left - 288, -30 ) );
+    // const asteroidTextProperty = new Property( new Vector2( this.layoutBounds.left - 288, -30 ) );
 
     //Comet property's ( above asteroid )
     const cometPositionProperty = new Property( new Vector2( this.layoutBounds.left - 250, this.layoutBounds.bottom ) );
-    const cometTextProperty = new Property( new Vector2( this.layoutBounds.left - 280, this.layoutBounds.bottom - 30 ) );
+    // const cometTextProperty = new Property( new Vector2( this.layoutBounds.left - 280, this.layoutBounds.bottom - 30 ) );
 
     //Meteor property's ( below asteroid )
     const meteorPositionProperty = new Property( new Vector2( this.layoutBounds.left - 300, this.layoutBounds.centerY ) );
-    const meteorTextProperty = new Property( new Vector2( this.layoutBounds.left - 332, this.layoutBounds.centerY - 30 ) );
+    // const meteorTextProperty = new Property( new Vector2( this.layoutBounds.left - 332, this.layoutBounds.centerY - 30 ) );
 
-    function randomDelay( min, max ) {
+    function randomSize( min, max ) {
       return Math.random() * ( max - min ) + min; //eslint-disable-line bad-sim-text 
     }
  
- function randomDuration( min, max ) {
+ function randomXY( min, max ) {
       return Math.random() * ( max - min ) + min; //eslint-disable-line bad-sim-text 
     }
+
+//BACKGROUND
+
+for ( let stars = 1; stars < 100; stars++ ) {
+const star = new Circle( randomSize( 0.5, 4 ), {
+  fill: 'white',
+  opacity: 0.6
+} );
+
+    star.setX( randomXY( this.layoutBounds.left - 150, this.layoutBounds.right + 150 ) );
+    star.setY( randomXY( this.layoutBounds.top, this.layoutBounds.bottom ) );
+    this.addChild( star );
+}
+
+//
+//
+
 
     //COMPONENTS
 
@@ -81,110 +88,76 @@ class TestEvanScreenView extends ScreenView {
     } );
   
     const asteroidCircle = new RoundToggleButton( asteroidCircleProperty, 'true', 'false', {
-      baseColor: 'white',
-      stroke: 'lightgrey',
-      radius: 20
+      baseColor: new Color( 137, 137, 137 ),
+      content: new Text( 'Asteroid', {
+        fontSize: 17,
+        fill: 'black',
+        fontWeight: 'bold'
+      } ),
+      radius: 35
     } );
 
     asteroidPositionProperty.linkAttribute( asteroidCircle, 'translation' );
     this.addChild( asteroidCircle );
 
-    const asteroidTitle = new Text( 'Asteroid', {
-      fill: 'white',
-      fontSize: 20
+    // const asteroidTitle = new Text( 'Asteroid', {
+    //   fill: 'white',
+    //   fontSize: 20
+    // } );
+    // asteroidTextProperty.linkAttribute( asteroidTitle, 'translation' );
+    // this.addChild( asteroidTitle );
+
+
+    //ASTEROID ANIMATIONS
+
+    const asteroidGoRight = new Animation( {
+      object: asteroidCircle,
+      targets: [ {
+        property: asteroidPositionProperty,
+        easing: easingProperty.value,
+        to: new Vector2( this.layoutBounds.right + 200, this.layoutBounds.bottom )
+      } ],
+      duration: 4
     } );
-    asteroidTextProperty.linkAttribute( asteroidTitle, 'translation' );
-    this.addChild( asteroidTitle );
 
-
-    const asteroidGoRight = () => {
-      
-      const asteroidDur = randomDuration( 0.1, 2 );
-
-      const asteroidRight = new Vector2( this.layoutBounds.right + 200, this.layoutBounds.bottom );
-      asteroidCircle.translation = asteroidRight;
-      let asteroidCircleRight = null;
-      asteroidCircleRight && asteroidCircleRight.stop();
-      asteroidCircleRight = new Animation( {
+    const asteroidGoLeft = new Animation( {
+        object: asteroidCircle,
         targets: [ {
           property: asteroidPositionProperty,
-          easing: easingProperty.value,
-          to: asteroidRight
+          to: new Vector2( this.layoutBounds.left - 250, 0 ),
+          easing: easingProperty.value
         } ],
-        duration: asteroidDur
- 
-      } ).start();
+        duration: asteroidGoRight.duration
+    } );
 
-      const asteroidRightText = new Vector2( this.layoutBounds.right + 162, this.layoutBounds.bottom - 30 );
-      asteroidTitle.translation = asteroidRightText;
-      let asteroidTextRight = null;
-      asteroidTextRight && asteroidTextRight.stop();
-      asteroidTextRight = new Animation( {
-          targets: [ {
-            property: asteroidTextProperty,
-            easing: easingProperty.value,
-            to: asteroidRightText
-          } ],
-          duration: asteroidDur
-      } ).start();
+    asteroidGoRight.then( asteroidGoLeft );
+    asteroidGoLeft.then( asteroidGoRight );
 
-      setTimeout( //eslint-disable-line bad-sim-text
-        () => {
-          asteroidGoLeft();
-        }, randomDelay( 500, 5000 )
-      );
+  
+    // const asteroidTextGoRight = new Animation( {
+    //     object: asteroidTitle,
+    //     targets: [ {
+    //         property: asteroidTextProperty,
+    //         to: new Vector2( this.layoutBounds.right + 162, this.layoutBounds.bottom - 30 ),
+    //         easing: easingProperty.value
+    //     } ],
+    //     duration: asteroidGoRight.duration
+    // } );
 
-    };
+    // const asteroidTextGoLeft = new Animation( {
+    //     object: asteroidTitle,
+    //     targets: [ {
+    //       property: asteroidTextProperty,
+    //       to: new Vector2( this.layoutBounds.left - 288, -30 ),
+    //       easing: easingProperty.value
+    //     } ],
+    //     duration: asteroidGoRight.duration
+    // } );
 
-    const asteroidGoLeft = () => {
-
-      const asteroidDur = randomDuration( 0.1, 2 );
-     
-      const asteroidLeft = new Vector2( this.layoutBounds.left - 250, 0 );
-        asteroidCircle.translation = asteroidLeft;
-        let asteroidCircleLeft = null;
-        asteroidCircleLeft && asteroidCircleLeft.stop();
-        asteroidCircleLeft = new Animation( {
-          targets: [ {
-            property: asteroidPositionProperty,
-            easing: easingProperty.value,
-            to: asteroidLeft
-          } ],
-          duration: asteroidDur
-        } ).start();
-        // console.log( 'destination:', '(', asteroidLeft.x, ', ', asteroidLeft.y, ')' );
-
-        const asteroidLeftText = new Vector2( this.layoutBounds.left - 288, -30 );
-        asteroidTitle.translation = asteroidLeftText;
-        let asteroidTextLeft = null;
-        asteroidTextLeft && asteroidTextLeft.stop();
-        asteroidTextLeft = new Animation( {
-            targets: [ {
-              property: asteroidTextProperty,
-              easing: easingProperty.value,
-              to: asteroidLeftText
-            } ],
-            duration: asteroidDur
-        } ).start();
-
-        setTimeout( //eslint-disable-line bad-sim-text
-        () => {
-          asteroidGoRight();
-        }, randomDelay( 500, 5000 )
-      );
-
-    };
+    // asteroidTextGoRight.then( asteroidTextGoLeft );
+    // asteroidTextGoLeft.then( asteroidTextGoRight );
 
     //
-
-    //
-
-    //
-
-    //
-    
-    //
-
     //
 
     // Comet
@@ -207,113 +180,78 @@ class TestEvanScreenView extends ScreenView {
     } );
   
     const cometCircle = new RoundToggleButton( cometCircleProperty, 'true', 'false', {
-      baseColor: 'white',
-      stroke: 'lightgrey',
-      radius: 20
+      baseColor: new Color( 111, 176, 223, 255 ),
+      content: new Text( 'Comet', {
+          fontFamily: 'arial',
+          fontWeight: 'bold',
+          fill: 'black',
+          fontSize: 18
+      } ),
+      radius: 40
     } );
-
     cometPositionProperty.linkAttribute( cometCircle, 'translation' );
     this.addChild( cometCircle );
 
-    const cometTitle = new Text( 'Comet', {
-      fill: 'white',
-      fontSize: 20
-    } );
-    cometTextProperty.linkAttribute( cometTitle, 'translation' );
-    this.addChild( cometTitle );
+    // const cometTitle = new Text( 'Comet', {
+    //   fill: 'white',
+    //   fontSize: 20
+    // } );
+    // cometTextProperty.linkAttribute( cometTitle, 'translation' );
+    // this.addChild( cometTitle );
 
 
-    const cometGoRight = () => {
+    //COMET ANIMATIONS
 
-      const cometDur = randomDuration( 0.1, 2 );
-
-      //Move circle right
-      const cometRight = new Vector2( this.layoutBounds.right + 200, this.layoutBounds.top );
-      cometCircle.translation = cometRight;
-      let cometCircleRight = null;
-      cometCircleRight && cometCircleRight.stop();
-      cometCircleRight = new Animation( {
+    const cometGoRight = new Animation( {
+        object: cometCircle,
         targets: [ {
           property: cometPositionProperty,
           easing: easingProperty.value,
-          to: cometRight
+          to: new Vector2( this.layoutBounds.right + 200, this.layoutBounds.top )
         } ],
-        duration: cometDur
-      } ).start();
+        duration: 0.8
+    } );
 
+    const cometGoLeft = new Animation( {
+      object: cometCircle,
+      targets: [ {
+        property: cometPositionProperty,
+        easing: easingProperty.value,
+        to: new Vector2( this.layoutBounds.left - 250, this.layoutBounds.bottom )
+      } ],
+      duration: cometGoRight.duration
+    } );
 
-      const cometRightText = new Vector2( this.layoutBounds.right + 170, this.layoutBounds.top - 30 );
-      cometTitle.translation = cometRightText;
-      let cometTextRight = null;
-      cometTextRight && cometTextRight.stop();
-      cometTextRight = new Animation( {
-        targets: [ {
-            property: cometTextProperty,
-            easing: easingProperty.value,
-            to: cometRightText
-        } ],
-        duration: cometDur
-      } ).start();
+    cometGoRight.then( cometGoLeft );
+    cometGoLeft.then( cometGoRight );
 
-      setTimeout( //eslint-disable-line bad-sim-text
-      () => {
-        cometGoLeft();
-      }, randomDelay( 500, 5000 )
-    );
+    // const cometTextGoRight = new Animation( {
+    //   object: cometTitle,
+    //   targets: [ {
+    //     property: cometTextProperty,
+    //     to: new Vector2( this.layoutBounds.right + 170, this.layoutBounds.top - 30 ),
+    //     easing: easingProperty.value
+    //   } ],
+    //   duration: cometGoRight.duration
+    // } );
 
-    };
+    // const cometTextGoLeft = new Animation( {
+    //   object: cometTitle,
+    //   targets: [ {
+    //       property: cometTextProperty,
+    //       to: new Vector2( this.layoutBounds.left - 280, this.layoutBounds.bottom - 30 ),
+    //       easing: easingProperty.value
+    //   } ],
+    //   duration: cometGoRight.duration
+    // } );
 
-    const cometGoLeft = () => {
-
-      const cometDur = randomDuration( 0.1, 2 );
-
-      const cometLeft = new Vector2( this.layoutBounds.left - 250, this.layoutBounds.bottom );
-      cometCircle.translation = cometLeft;
-      let cometCircleLeft = null;
-      cometCircleLeft && cometCircleLeft.stop();
-      cometCircleLeft = new Animation( {
-          targets: [ {
-              property: cometPositionProperty,
-              easing: easingProperty.value,
-              to: cometLeft
-          } ],
-          duration: cometDur
-      } ).start();
-
-      const cometLeftText = new Vector2( this.layoutBounds.left - 280, this.layoutBounds.bottom - 30 );
-      cometTitle.translation = cometLeftText;
-      let cometTextLeft = null;
-      cometTextLeft && cometTextLeft.stop();
-      cometTextLeft = new Animation( {
-          targets: [ {
-            property: cometTextProperty,
-            easing: easingProperty.value,
-            to: cometLeftText
-          } ],
-          duration: cometDur
-      } ).start();
-
-      setTimeout( //eslint-disable-line bad-sim-text
-        () => {
-          cometGoRight();
-        }, randomDelay( 500, 5000 )
-      );
-
-    };
-    
-    //
+    // cometTextGoRight.then( cometTextGoLeft );
+    // cometTextGoLeft.then( cometTextGoRight );
 
     //
-
     //
 
-    //
-
-    //
-
-    //
-    //Meteor
-
+    //Meteor 
     const meteorInfo = new Text( 'Meteoroids are small chunks of rocks that travel through space.', {
       
       x: this.layoutBounds.centerX - 230,
@@ -326,7 +264,8 @@ class TestEvanScreenView extends ScreenView {
     const meteorInfo2 = new Text( 'When a Meteoroid enters a planets atmosphere and burn up, they are now known as Meteors', {
       x: this.layoutBounds.centerX - 360,
       y: this.layoutBounds.centerY + 30,
-      fontSize: 18
+      fontSize: 18,
+      fill: 'white'
     } );
     
     const meteorCircleProperty = new Property( false );
@@ -342,131 +281,114 @@ class TestEvanScreenView extends ScreenView {
     } );
   
     const meteorCircle = new RoundToggleButton( meteorCircleProperty, 'true', 'false', {
-      baseColor: 'white',
-      stroke: 'lightgrey',
-      radius: 20
+      baseColor: new Color( 135, 113, 81 ),
+      content: new Text( 'Meteoroid', {
+        fontSize: 16,
+        fill: 'black',
+        fontWeight: 'bold'
+      } ),
+      radius: 27
     } );
 
     meteorPositionProperty.linkAttribute( meteorCircle, 'translation' );
     this.addChild( meteorCircle );
 
-    const meteorTitle = new Text( 'Meteor', {
-      fill: 'white',
-      fontSize: 20
+    // const meteorTitle = new Text( 'Meteor', {
+    //   fill: 'white',
+    //   fontSize: 20
+    // } );
+    // meteorTextProperty.linkAttribute( meteorTitle, 'translation' );
+    // this.addChild( meteorTitle );
+
+    //METEOR ANIMATIONS
+
+    const meteorGoRight = new Animation( {
+      object: meteorCircle,
+      targets: [ {
+        property: meteorPositionProperty,
+        easing: easingProperty.value,
+        to: new Vector2( this.layoutBounds.right + 300, this.layoutBounds.centerY )
+      } ],
+      duration: 2
     } );
-    meteorTextProperty.linkAttribute( meteorTitle, 'translation' );
-    this.addChild( meteorTitle );
 
-    const meteorGoRight = () => {
+    const meteorGoLeft = new Animation( {
+      object: meteorCircle,
+      targets: [ {
+        property: meteorPositionProperty,
+        easing: easingProperty.value,
+        to: new Vector2( this.layoutBounds.left - 300, this.layoutBounds.centerY )
+      } ],
+      duration: meteorGoRight.duration
+    } );
 
-      const meteorDur = randomDuration( 0.1, 2 );
-      //Move circle right
-      const meteorRight = new Vector2( this.layoutBounds.right + 300, this.layoutBounds.centerY );
-      meteorCircle.translation = meteorRight;
-      let meteorCircleRight = null;
-      meteorCircleRight && meteorCircleRight.stop();
-      meteorCircleRight = new Animation( {
-        targets: [ {
-          property: meteorPositionProperty,
-          easing: easingProperty.value,
-          to: meteorRight
-        } ],
-        duration: meteorDur
-      } ).start();
+      meteorGoRight.then( meteorGoLeft );
+      meteorGoLeft.then( meteorGoRight );
+
+      // const meteorTextGoRight = new Animation( {
+      //   object: meteorTitle,
+      //   targets: [ {
+      //     property: meteorTextProperty,
+      //     to: new Vector2( this.layoutBounds.right + 270, this.layoutBounds.centerY - 30 ),
+      //     easing: easingProperty.value
+      //   } ],
+      //   duration: meteorGoRight.duration
+      // } );
 
 
-      const meteorRightText = new Vector2( this.layoutBounds.right + 270, this.layoutBounds.centerY - 30 );
-      meteorTitle.translation = meteorRightText;
-      let meteorTextRight = null;
-      meteorTextRight && meteorTextRight.stop();
-      meteorTextRight = new Animation( {
-        targets: [ {
-            property: meteorTextProperty,
-            easing: easingProperty.value,
-            to: meteorRightText
-        } ],
-        duration: meteorDur
-      } ).start();
+      // const meteorTextGoLeft = new Animation( {
+      //   object: meteorTitle,
+      //   targets: [ {
+      //     property: meteorTextProperty,
+      //     to: new Vector2( this.layoutBounds.left - 332, this.layoutBounds.centerY - 30 ),
+      //     easing: easingProperty.value
+      //   } ],
+      //   duration: meteorGoRight.duration
+      // } );
 
-      setTimeout( //eslint-disable-line bad-sim-text
-        () => {
-          meteorGoLeft();
-        }, randomDelay( 500, 5000 )
-      );
-
-    };
-
-    const meteorGoLeft = () => {
-
-      const meteorDur = randomDuration( 0.1, 2 );
-
-      const meteorLeft = new Vector2( this.layoutBounds.left - 300, this.layoutBounds.centerY );
-      meteorCircle.translation = meteorLeft;
-      let meteorCircleLeft = null;
-      meteorCircleLeft && meteorCircleLeft.stop();
-      meteorCircleLeft = new Animation( {
-          targets: [ {
-              property: meteorPositionProperty,
-              easing: easingProperty.value,
-              to: meteorLeft
-          } ],
-          duration: meteorDur
-      } ).start();
-    
-      const meteorLeftText = new Vector2( this.layoutBounds.left - 332, this.layoutBounds.centerY - 30 );
-      meteorTitle.translation = meteorLeftText;
-      let meteorTextLeft = null;
-      meteorTextLeft && meteorTextLeft.stop();
-      meteorTextLeft = new Animation( {
-          targets: [ {
-            property: meteorTextProperty,
-            easing: easingProperty.value,
-            to: meteorLeftText
-          } ],
-          duration: meteorDur
-      } ).start();
-
-      setTimeout( //eslint-disable-line bad-sim-text
-        () => {
-          meteorGoRight();
-        }, randomDelay( 500, 5000 )
-      );
-
-    };
+      // meteorTextGoRight.then( meteorTextGoLeft );
+      // meteorTextGoLeft.then( meteorTextGoRight );
 
     //
-
     //
+    const playingProperty = new Property( false );
+    playingProperty.lazyLink( value => {
+      if ( value === 'false' ) {
+        asteroidGoLeft.stop();
+        asteroidGoRight.stop();
+        cometGoRight.stop();
+        cometGoLeft.stop();
+        meteorGoRight.stop();
+        meteorGoLeft.stop();
+      }
+      else if ( value === 'true' ) {
+        
+        asteroidGoRight.start();
+        
+        cometGoRight.start();
+        
+        meteorGoRight.start();
+        
+      }
+    } );
+  
 
-    //
-
-    //
-
-    //
-
-    //BUTTON 
-    const playButton = new RoundPushButton( {
-        content: new Text( '⏵ / ⏸', { font: new Font( { size: 20 } ) } ),
-        x: this.layoutBounds.centerX,
-        y: this.layoutBounds.centerY + 250,
-      
-        //ANIMATIONS
-        listener: () => {
-
-          if ( asteroidPositionProperty.value.x === this.layoutBounds.left - 250 ) {
-              asteroidGoRight();
-              cometGoRight();
-              meteorGoRight();
-          }
-            //ORIGINAL POSITION 
-        }
+    const playButton = new RoundToggleButton( playingProperty, 'true', 'false', {
+      content: new Text( '⏵ / ⏸', {
+        fontSize: 18
+      } ),
+      baseColor: 'white',
+      stroke: 'lightgrey',
+      radius: 25,
+      x: this.layoutBounds.centerX,
+      y: this.layoutBounds.bottom - 50
     } );
     this.addChild( playButton );
 
 
     const instructionText = new Text( 'Pause and press a space objet to learn more!', {
       x: this.layoutBounds.centerX - 450,
-      y: this.layoutBounds.bottom - 50,
+      y: this.layoutBounds.bottom - 40,
       fontSize: 18,
       fontFamily: 'verdana',
       fill: 'white'
