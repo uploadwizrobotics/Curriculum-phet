@@ -12,6 +12,7 @@ import Dimension2 from '../../../../dot/js/Dimension2.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import ModelImage from './ModelImage.js';
 
+
 class TestEvanModel {
 
  constructor() {

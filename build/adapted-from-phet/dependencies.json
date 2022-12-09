@@ -1,5 +1,5 @@
 {
-  "comment": "# test-evan 1.0.0-dev.0 Thu Dec 08 2022 16:22:18 GMT-0500 (Eastern Standard Time)",
+  "comment": "# test-evan 1.0.0-dev.0 Fri Dec 09 2022 15:12:48 GMT-0500 (Eastern Standard Time)",
   "assert": {
     "sha": "c13a8c7741d95fbd8e37619c66ebcca8686dffe7",
     "branch": "master"
@@ -73,7 +73,7 @@
     "branch": "master"
   },
   "test-evan": {
-    "sha": "abcce1a318a6d6d8eeaaf7ca5b9937a550e28c1e",
+    "sha": "0c57548246e0a2477be7a83568eaa53b46b4c4af",
     "branch": "test-evan"
   },
   "twixt": {
