@@ -5,7 +5,7 @@ Hello, this is the Wiz Robotics Phet Repo!
 
 This is where you will be uploading your phets to the repo. 
 
-Notice: phet should not be structured into folders, as that messes up the imports and interaction with different phet files. 
+Notice: phet should not be structured into folders. An example is the existing file strucuture in the maste branch. Doing this messes up the imports and interaction with different phet files. 
 Example: You are unable to grunt, since "chipper" does not have access to the other relevant files needed to compile. 
 
 
