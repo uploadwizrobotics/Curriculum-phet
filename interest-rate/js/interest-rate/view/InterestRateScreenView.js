@@ -41,8 +41,6 @@ class InterestRateScreenView extends ScreenView {
 
     super( );
 
-    const totalPositionProperty = new Property( new Vector2( this.layoutBounds.centerX, this.layoutBounds.centerY + 130 ) );
-
     // COMPONENTS ON THE LEFT
 
 
@@ -59,7 +57,8 @@ class InterestRateScreenView extends ScreenView {
           trackFill: 'black',
           trackFillEnabled: 'black',
           trackSize: new Dimension2( 400, 4 ),
-          center: new Vector2( this.layoutBounds.left + 60, this.layoutBounds.centerY - 150 )
+          left: this.layoutBounds.left,
+          y: this.layoutBounds.centerY - 150
         } );
       for ( let i = 0; i <= 1; i += 0.1 ) {
         interestSlider.addMinorTick( i );
@@ -70,7 +69,7 @@ class InterestRateScreenView extends ScreenView {
 
 
       const interestValue = new Text( '0%', {
-        center: new Vector2( interestSlider.center.x + 223, this.layoutBounds.centerY - 163 ),
+        center: new Vector2( interestSlider.center.x - 230, this.layoutBounds.centerY - 155 ),
         fontSize: 18,
         fontFamily: 'baskerville'
       } );
@@ -97,7 +96,8 @@ class InterestRateScreenView extends ScreenView {
         trackFill: 'black',
         trackFillEnabled: 'black',
         trackSize: new Dimension2( 400, 4 ),
-        center: new Vector2( this.layoutBounds.left + 60, this.layoutBounds.centerY )
+        left: this.layoutBounds.left,
+        y: this.layoutBounds.centerY + 150
       } );
       for ( let i = 0; i <= 100; i += 10 ) {
         yearsSlider.addMinorTick( i );
@@ -107,7 +107,8 @@ class InterestRateScreenView extends ScreenView {
     this.addChild( yearsSlider );
 
     const yearsValue = new Text( '0%', {
-      center: new Vector2( yearsSlider.center.x + 223, this.layoutBounds.centerY - 13 ),
+      right: yearsSlider.center.x - 240,
+      y: yearsSlider.y - 3,
       fontSize: 18,
       fontFamily: 'baskerville'
     } );
@@ -127,8 +128,8 @@ class InterestRateScreenView extends ScreenView {
     let timesIndex = 0;
 
     const timesLabel = new Text( times[ timesIndex ], {
-          left: yearsSlider.center.x,
-          centerY: this.layoutBounds.centerY + 150,
+          left: yearsSlider.centerX,
+          centerY: this.layoutBounds.centerY,
           fontSize: 18,
           fontWeight: 'bold'
     } );
@@ -136,7 +137,7 @@ class InterestRateScreenView extends ScreenView {
 
     const nextTimes = new Image( rightarrow_png, {
       maxWidth: 40,
-      center: new Vector2( timesLabel.left, timesLabel.center.y + 35 ),
+      center: new Vector2( yearsSlider.centerX, timesLabel.center.y + 35 ),
       cursor: 'pointer'
     } );
     nextTimes.addInputListener( new FireListener( {
@@ -167,10 +168,12 @@ class InterestRateScreenView extends ScreenView {
 
 
     const bankImage = new Image( bank_png, {
-      center: new Vector2( this.layoutBounds.centerX, this.layoutBounds.centerY ),
-      maxWidth: 180
+      center: new Vector2( 651, this.layoutBounds.centerY ),
+      maxWidth: 150
     } );
     this.addChild( bankImage );
+
+    const totalPositionProperty = new Property( new Vector2( bankImage.centerX, bankImage.bottom + 30 ) );
 
      let total = 0;
      let totalText;
@@ -373,48 +376,9 @@ class InterestRateScreenView extends ScreenView {
 
     //$5 
 
-    const plusFive = new RectangularPushButton( {
-        content: new Image( plus_png ),
-        maxWidth: 30,
-        x: this.layoutBounds.right - 85,
-        y: this.layoutBounds.centerY - 220,
-        baseColor: 'transparent',
-        listener: () => {
-          if ( totalText === undefined ) {
-    
-            total += 5;
-    
-            totalText = new Text( `$${total}`, {
-              fontSize: 32,
-              fontFamily: 'baskerville',
-              fill: new Color( 30, 125, 19 )
-            } );
-            totalPositionProperty.linkAttribute( totalText, 'center' );
-            this.addChild( totalText );
-
-          }
-            else if ( totalText !== undefined ) {
-    
-              this.removeChild( totalText );
-    
-              total += 5;
-      
-              totalText = new Text( `$${total}`, {
-                fontSize: 32,
-                fontFamily: 'baskerville',
-                fill: new Color( 30, 125, 19 )
-              } );
-              totalPositionProperty.linkAttribute( totalText, 'center' );
-              this.addChild( totalText );
-            
-            }
-        }
-    } );
-    this.addChild( plusFive );
-
     const five = new Image( five_png, {
       maxWidth: 100,
-      x: this.layoutBounds.right - 50,
+      right: this.layoutBounds.right,
       y: this.layoutBounds.centerY - 250,
       baseColor: 'transparent',
       listener: () => {
@@ -454,6 +418,45 @@ class InterestRateScreenView extends ScreenView {
     } );
     this.addChild( five );
 
+    const plusFive = new RectangularPushButton( {
+        content: new Image( plus_png ),
+        maxWidth: 30,
+        x: five.x - 40,
+        y: this.layoutBounds.centerY - 220,
+        baseColor: 'transparent',
+        listener: () => {
+          if ( totalText === undefined ) {
+    
+            total += 5;
+    
+            totalText = new Text( `$${total}`, {
+              fontSize: 32,
+              fontFamily: 'baskerville',
+              fill: new Color( 30, 125, 19 )
+            } );
+            totalPositionProperty.linkAttribute( totalText, 'center' );
+            this.addChild( totalText );
+
+          }
+            else if ( totalText !== undefined ) {
+    
+              this.removeChild( totalText );
+    
+              total += 5;
+      
+              totalText = new Text( `$${total}`, {
+                fontSize: 32,
+                fontFamily: 'baskerville',
+                fill: new Color( 30, 125, 19 )
+              } );
+              totalPositionProperty.linkAttribute( totalText, 'center' );
+              this.addChild( totalText );
+            
+            }
+        }
+    } );
+    this.addChild( plusFive );
+
     const fiveLabel = new Text( '$5', {
       fontSize: 16,
       center: new Vector2( five.center.x, five.y + 10 ),
@@ -464,7 +467,7 @@ class InterestRateScreenView extends ScreenView {
     const minusFive = new RectangularPushButton( {
       content: new Image( minus_png ),
       maxWidth: 30,
-      x: this.layoutBounds.right + 55,
+      x: five.x + 105,
       y: this.layoutBounds.centerY - 220,
       baseColor: 'transparent',
       listener: () => {
@@ -517,48 +520,9 @@ class InterestRateScreenView extends ScreenView {
 
     //$10
 
-    const plusTen = new RectangularPushButton( {
-      content: new Image( plus_png ),
-      maxWidth: 30,
-      x: this.layoutBounds.right - 85,
-      y: this.layoutBounds.centerY - 120,
-      baseColor: 'transparent',
-      listener: () => {
-        if ( totalText === undefined ) {
-  
-          total += 10;
-  
-          totalText = new Text( `$${total}`, {
-            fontSize: 32,
-            fontFamily: 'baskerville',
-            fill: new Color( 30, 125, 19 )
-          } );
-          totalPositionProperty.linkAttribute( totalText, 'center' );
-          this.addChild( totalText );
-  
-          }
-          else if ( totalText !== undefined ) {
-  
-            this.removeChild( totalText );
-  
-  
-            total += 10;
-    
-            totalText = new Text( `$${total}`, {
-              fontSize: 32,
-              fontFamily: 'baskerville',
-              fill: new Color( 30, 125, 19 )
-            } );
-            totalPositionProperty.linkAttribute( totalText, 'center' );
-            this.addChild( totalText );
-          }
-      }
-    } );
-    this.addChild( plusTen );
-
     const ten = new Image( ten_png, {
       maxWidth: 100,
-      x: this.layoutBounds.right - 50,
+      right: this.layoutBounds.right,
       y: this.layoutBounds.centerY - 150,
       baseColor: 'transparent',
       listener: () => {
@@ -599,6 +563,45 @@ class InterestRateScreenView extends ScreenView {
     } );
     this.addChild( ten );
 
+    const plusTen = new RectangularPushButton( {
+      content: new Image( plus_png ),
+      maxWidth: 30,
+      x: ten.x - 40,
+      y: this.layoutBounds.centerY - 120,
+      baseColor: 'transparent',
+      listener: () => {
+        if ( totalText === undefined ) {
+  
+          total += 10;
+  
+          totalText = new Text( `$${total}`, {
+            fontSize: 32,
+            fontFamily: 'baskerville',
+            fill: new Color( 30, 125, 19 )
+          } );
+          totalPositionProperty.linkAttribute( totalText, 'center' );
+          this.addChild( totalText );
+  
+          }
+          else if ( totalText !== undefined ) {
+  
+            this.removeChild( totalText );
+  
+  
+            total += 10;
+    
+            totalText = new Text( `$${total}`, {
+              fontSize: 32,
+              fontFamily: 'baskerville',
+              fill: new Color( 30, 125, 19 )
+            } );
+            totalPositionProperty.linkAttribute( totalText, 'center' );
+            this.addChild( totalText );
+          }
+      }
+    } );
+    this.addChild( plusTen );
+
     const tenLabel = new Text( '$10', {
       fontSize: 16,
       fontFamily: 'baskerville',
@@ -609,7 +612,7 @@ class InterestRateScreenView extends ScreenView {
     const minusTen = new RectangularPushButton( {
       content: new Image( minus_png ),
       maxWidth: 30,
-      x: this.layoutBounds.right + 55,
+      x: ten.x + 105,
       y: this.layoutBounds.centerY - 120,
       baseColor: 'transparent',
       listener: () => {
@@ -663,49 +666,10 @@ class InterestRateScreenView extends ScreenView {
 
     //$20 
 
-    const plusTwenty = new RectangularPushButton( {
-      content: new Image( plus_png ),
-      maxWidth: 30,
-      x: this.layoutBounds.right - 85,
-      y: this.layoutBounds.centerY - 20,
-      baseColor: 'transparent',
-      listener: () => {
-        if ( totalText === undefined ) {
-  
-          total += 20;
-  
-          totalText = new Text( `$${total}`, {
-            fontSize: 32,
-            fontFamily: 'baskerville',
-            fill: new Color( 30, 125, 19 )
-          } );
-          totalPositionProperty.linkAttribute( totalText, 'center' );
-          this.addChild( totalText );
-  
-          }
-          else if ( totalText !== undefined ) {
-  
-            this.removeChild( totalText );
-  
-            total += 20;
-
-    
-            totalText = new Text( `$${total}`, {
-              fontSize: 32,
-              fontFamily: 'baskerville',
-              fill: new Color( 30, 125, 19 )
-            } );
-            totalPositionProperty.linkAttribute( totalText, 'center' );
-            this.addChild( totalText );
-          }
-      }
-    } );
-    this.addChild( plusTwenty );
-
     const twenty = new Image( twenty_png, {
       baseColor: 'transparent',
       maxWidth: 100,
-      x: this.layoutBounds.right - 50,
+      right: this.layoutBounds.right,
       y: this.layoutBounds.centerY - 50,
       listener: () => {
 
@@ -745,6 +709,45 @@ class InterestRateScreenView extends ScreenView {
     } );
     this.addChild( twenty );
 
+    const plusTwenty = new RectangularPushButton( {
+      content: new Image( plus_png ),
+      maxWidth: 30,
+      x: twenty.x - 40,
+      y: this.layoutBounds.centerY - 20,
+      baseColor: 'transparent',
+      listener: () => {
+        if ( totalText === undefined ) {
+  
+          total += 20;
+  
+          totalText = new Text( `$${total}`, {
+            fontSize: 32,
+            fontFamily: 'baskerville',
+            fill: new Color( 30, 125, 19 )
+          } );
+          totalPositionProperty.linkAttribute( totalText, 'center' );
+          this.addChild( totalText );
+  
+          }
+          else if ( totalText !== undefined ) {
+  
+            this.removeChild( totalText );
+  
+            total += 20;
+
+    
+            totalText = new Text( `$${total}`, {
+              fontSize: 32,
+              fontFamily: 'baskerville',
+              fill: new Color( 30, 125, 19 )
+            } );
+            totalPositionProperty.linkAttribute( totalText, 'center' );
+            this.addChild( totalText );
+          }
+      }
+    } );
+    this.addChild( plusTwenty );
+
     const twentyLabel = new Text( '$20', {
       fontSize: 16,
       fontFamily: 'baskerville',
@@ -755,7 +758,7 @@ class InterestRateScreenView extends ScreenView {
     const minusTwenty = new RectangularPushButton( {
       content: new Image( minus_png ),
       maxWidth: 30,
-      x: this.layoutBounds.right + 55,
+      x: twenty.x + 105,
       y: this.layoutBounds.centerY - 20,
       baseColor: 'transparent',
       listener: () => {
@@ -807,50 +810,9 @@ class InterestRateScreenView extends ScreenView {
 
     //$50 
 
-    const plusFifty = new RectangularPushButton( {
-      content: new Image( plus_png ),
-      maxWidth: 30,
-      x: this.layoutBounds.right - 85,
-      y: this.layoutBounds.centerY + 80,
-      baseColor: 'transparent',
-      listener: () => {
-        if ( totalText === undefined ) {
-
-  
-          total += 50;
-  
-          totalText = new Text( `$${total}`, {
-            fontSize: 32,
-            fontFamily: 'baskerville',
-            fill: new Color( 30, 125, 19 )
-          } );
-          totalPositionProperty.linkAttribute( totalText, 'center' );
-          this.addChild( totalText );
-  
-          }
-          else if ( totalText !== undefined ) {
-  
-            this.removeChild( totalText );
-  
-  
-            total += 50;
-          
-    
-            totalText = new Text( `$${total}`, {
-              fontSize: 32,
-              fontFamily: 'baskerville',
-              fill: new Color( 30, 125, 19 )
-            } );
-            totalPositionProperty.linkAttribute( totalText, 'center' );
-            this.addChild( totalText );
-          }
-      }
-    } );
-    this.addChild( plusFifty );
-
     const fifty = new Image( fifty_png, {
       maxWidth: 100,
-      x: this.layoutBounds.right - 50,
+      right: this.layoutBounds.right,
       y: this.layoutBounds.centerY + 50,
       baseColor: 'transparent',
       listener: () => {
@@ -890,6 +852,47 @@ class InterestRateScreenView extends ScreenView {
     } );
     this.addChild( fifty );
 
+    const plusFifty = new RectangularPushButton( {
+      content: new Image( plus_png ),
+      maxWidth: 30,
+      x: fifty.x - 40,
+      y: this.layoutBounds.centerY + 80,
+      baseColor: 'transparent',
+      listener: () => {
+        if ( totalText === undefined ) {
+
+  
+          total += 50;
+  
+          totalText = new Text( `$${total}`, {
+            fontSize: 32,
+            fontFamily: 'baskerville',
+            fill: new Color( 30, 125, 19 )
+          } );
+          totalPositionProperty.linkAttribute( totalText, 'center' );
+          this.addChild( totalText );
+  
+          }
+          else if ( totalText !== undefined ) {
+  
+            this.removeChild( totalText );
+  
+  
+            total += 50;
+          
+    
+            totalText = new Text( `$${total}`, {
+              fontSize: 32,
+              fontFamily: 'baskerville',
+              fill: new Color( 30, 125, 19 )
+            } );
+            totalPositionProperty.linkAttribute( totalText, 'center' );
+            this.addChild( totalText );
+          }
+      }
+    } );
+    this.addChild( plusFifty );
+
     const fiftyLabel = new Text( '$50', {
       fontSize: 16,
       fontFamily: 'baskerville',
@@ -900,7 +903,7 @@ class InterestRateScreenView extends ScreenView {
     const minusFifty = new RectangularPushButton( {
       content: new Image( minus_png ),
       maxWidth: 30,
-      x: this.layoutBounds.right + 55,
+      x: fifty.x + 105,
       y: this.layoutBounds.centerY + 80,
       baseColor: 'transparent',
       
@@ -955,49 +958,9 @@ class InterestRateScreenView extends ScreenView {
 
     //$100
 
-    const plusHundred = new RectangularPushButton( {
-      content: new Image( plus_png ),
-      maxWidth: 30,
-      x: this.layoutBounds.right - 85,
-      y: this.layoutBounds.centerY + 180,
-      baseColor: 'transparent',
-      listener: () => {
-        if ( totalText === undefined ) {
-
-  
-          total += 100;
-  
-          totalText = new Text( `$${total}`, {
-            fontSize: 32,
-            fontFamily: 'baskerville',
-            fill: new Color( 30, 125, 19 )
-          } );
-          totalPositionProperty.linkAttribute( totalText, 'center' );
-          this.addChild( totalText );
-  
-          }
-          else if ( totalText !== undefined ) {
-  
-            this.removeChild( totalText );
-  
-            total += 100;
-    
-            totalText = new Text( `$${total}`, {
-              fontSize: 32,
-              fontFamily: 'baskerville',
-              fill: new Color( 30, 125, 19 )
-            } );
-            totalPositionProperty.linkAttribute( totalText, 'center' );
-            this.addChild( totalText );
-          }
-      }
-
-    } );
-    this.addChild( plusHundred );
-
     const hundred = new Image( hundred_png, {
       maxWidth: 100,
-      x: this.layoutBounds.right - 50,
+      right: this.layoutBounds.right,
       y: this.layoutBounds.centerY + 150,
       baseColor: 'transparent',
       listener: () => {
@@ -1038,6 +1001,46 @@ class InterestRateScreenView extends ScreenView {
     } );
     this.addChild( hundred );
 
+    const plusHundred = new RectangularPushButton( {
+      content: new Image( plus_png ),
+      maxWidth: 30,
+      x: hundred.x - 40,
+      y: this.layoutBounds.centerY + 180,
+      baseColor: 'transparent',
+      listener: () => {
+        if ( totalText === undefined ) {
+
+  
+          total += 100;
+  
+          totalText = new Text( `$${total}`, {
+            fontSize: 32,
+            fontFamily: 'baskerville',
+            fill: new Color( 30, 125, 19 )
+          } );
+          totalPositionProperty.linkAttribute( totalText, 'center' );
+          this.addChild( totalText );
+  
+          }
+          else if ( totalText !== undefined ) {
+  
+            this.removeChild( totalText );
+  
+            total += 100;
+    
+            totalText = new Text( `$${total}`, {
+              fontSize: 32,
+              fontFamily: 'baskerville',
+              fill: new Color( 30, 125, 19 )
+            } );
+            totalPositionProperty.linkAttribute( totalText, 'center' );
+            this.addChild( totalText );
+          }
+      }
+
+    } );
+    this.addChild( plusHundred );
+
     const hundredLabel = new Text( '$100', {
       fontSize: 16,
       fontFamily: 'baskerville',
@@ -1048,7 +1051,7 @@ class InterestRateScreenView extends ScreenView {
     const minusHundred = new RectangularPushButton( {
       content: new Image( minus_png ),
       maxWidth: 30,
-      x: this.layoutBounds.right + 55,
+      x: hundred.x + 105,
       y: this.layoutBounds.centerY + 180,
       baseColor: 'transparent',
       listener: () => {
@@ -1094,7 +1097,8 @@ class InterestRateScreenView extends ScreenView {
       }
     } );
     this.addChild( minusHundred );
- 
+
+    console.log( interestSlider.right, plusTwenty.left );
     //
   }
 
