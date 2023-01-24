@@ -29,12 +29,14 @@ class FrogPopulationScreenView extends ScreenView {
     super( );
 
     const frogPicture = new Image( frogimg, {
-      x: this.layoutBounds.center,
-      y: this.layoutBounds.center,
-      height: this.imageHeight / 1.5,
-      width: this.imageWidth / 1.5
+      x: this.layoutBounds.centerX - 450,
+      y: this.layoutBounds.centerY - 250,
+      maxHeight: 450,
+      maxWidth: 550
     } );
     this.addChild( frogPicture );
+
+    this.addChild( new Plane() );
 
     const newText = new Text( 'then catch each fly to learn more!', {
       x: this.layoutBounds.centerX - 450,
@@ -101,31 +103,17 @@ class FrogPopulationScreenView extends ScreenView {
     // // All flies caught/keep going messages
     const allFliesCaught1 = new Text( 'Congratulations! You', {
       x: this.layoutBounds.centerX + 40,
-      y: this.layoutBounds.centerY - 60,
+      y: this.layoutBounds.centerY - 40,
       fontSize: 40,
       fontFamily: 'fangsong',
       fill: '#FFE84C'
     } );
-    const allFliesCaught2 = new Text( 'caughtall of the flies!', {
+    const allFliesCaught2 = new Text( 'caught all of the flies!', {
       x: this.layoutBounds.centerX + 40,
-      y: this.layoutBounds.centerY - 15,
+      y: this.layoutBounds.centerY + 5,
       fontSize: 40,
       fontFamily: 'fangsong',
       fill: '#FFE84C'
-    } );
-    const keepGoing1 = new Text( 'You have some flies left,', {
-      x: this.layoutBounds.centerX + 40,
-      y: this.layoutBounds.centerY - 60,
-      fontSize: 40,
-      fontFamily: 'fangsong',
-      fill: 'white'
-    } );
-    const keepGoing2 = new Text( 'keep going to catch them!', {
-      x: this.layoutBounds.centerX + 40,
-      y: this.layoutBounds.centerY - 15,
-      fontSize: 40,
-      fontFamily: 'fangsong',
-      fill: 'white'
     } );
 
     function randomDelay( min, max ) {
@@ -182,15 +170,9 @@ class FrogPopulationScreenView extends ScreenView {
         this.addChild( flyCountStr );
         this.moveChildToIndex( flyCountStr, 0 );
         if ( flyCount === 1 ) {
-          this.addChild( keepGoing1 );
-          this.moveChildToIndex( keepGoing1, 1 );
-          this.addChild( keepGoing2 );
-          this.moveChildToIndex( keepGoing2, 2 );
           console.log( 'You have some flies left, keep going to catch them!' );
         }
         else if ( flyCount === 5 ) {
-          this.removeChildAt( 1 );
-          this.removeChildAt( 2 );
           this.addChild( allFliesCaught1 );
           this.addChild( allFliesCaught2 );
           console.log( 'Congratulations! You caught all of the flies!' );
@@ -337,15 +319,9 @@ class FrogPopulationScreenView extends ScreenView {
         this.addChild( flyCountStr );
         this.moveChildToIndex( flyCountStr, 0 );
         if ( flyCount === 1 ) {
-          this.addChild( keepGoing1 );
-          this.moveChildToIndex( keepGoing1, 1 );
-          this.addChild( keepGoing2 );
-          this.moveChildToIndex( keepGoing2, 2 );
           console.log( 'You have some flies left, keep going to catch them!' );
         }
         else if ( flyCount === 5 ) {
-          this.removeChildAt( 1 );
-          this.removeChildAt( 2 );
           this.addChild( allFliesCaught1 );
           this.addChild( allFliesCaught2 );
           console.log( 'Congratulations! You caught all of the flies!' );
@@ -452,7 +428,7 @@ class FrogPopulationScreenView extends ScreenView {
     //redFly
 
     const redFlyInfo = new Text( 'Red flies will eat other flies in the area.', {
-      x: this.layoutBounds.centerX + 76,
+      x: this.layoutBounds.centerX + 50,
       y: this.layoutBounds.centerY - 265,
       fontSize: 15,
       fill: '#F9A7A7',
@@ -460,7 +436,7 @@ class FrogPopulationScreenView extends ScreenView {
     } );
 
     const redFlyInfo2 = new Text( 'If there are too many, the frogs will starve from competition!', {
-      x: this.layoutBounds.centerX + 76,
+      x: this.layoutBounds.centerX + 50,
       y: this.layoutBounds.centerY - 240,
       fontSize: 15,
       fill: '#F9A7A7',
@@ -468,7 +444,7 @@ class FrogPopulationScreenView extends ScreenView {
     } );
 
     const redFlyInfo3 = new Text( 'Red flies are still necessary though: they attack insects that eat', {
-      x: this.layoutBounds.centerX + 76,
+      x: this.layoutBounds.centerX + 50,
       y: this.layoutBounds.centerY - 215,
       fontSize: 15,
       fill: '#F9A7A7',
@@ -476,7 +452,7 @@ class FrogPopulationScreenView extends ScreenView {
     } );
 
     const redFlyInfo4 = new Text( 'local autotrophs, which saves plants and helps with the carbon cycle!', {
-      x: this.layoutBounds.centerX + 76,
+      x: this.layoutBounds.centerX + 50,
       y: this.layoutBounds.centerY - 190,
       fontSize: 15,
       fill: '#F9A7A7',
@@ -512,15 +488,9 @@ class FrogPopulationScreenView extends ScreenView {
         this.addChild( flyCountStr );
         this.moveChildToIndex( flyCountStr, 0 );
         if ( flyCount === 1 ) {
-          this.addChild( keepGoing1 );
-          this.moveChildToIndex( keepGoing1, 1 );
-          this.addChild( keepGoing2 );
-          this.moveChildToIndex( keepGoing2, 2 );
           console.log( 'You have some flies left, keep going to catch them!' );
         }
         else if ( flyCount === 5 ) {
-          this.removeChildAt( 1 );
-          this.removeChildAt( 2 );
           this.addChild( allFliesCaught1 );
           this.addChild( allFliesCaught2 );
           console.log( 'Congratulations! You caught all of the flies!' );
@@ -667,15 +637,9 @@ class FrogPopulationScreenView extends ScreenView {
         this.addChild( flyCountStr );
         this.moveChildToIndex( flyCountStr, 0 );
         if ( flyCount === 1 ) {
-          this.addChild( keepGoing1 );
-          this.moveChildToIndex( keepGoing1, 1 );
-          this.addChild( keepGoing2 );
-          this.moveChildToIndex( keepGoing2, 2 );
           console.log( 'You have some flies left, keep going to catch them!' );
         }
         else if ( flyCount === 5 ) {
-          this.removeChildAt( 1 );
-          this.removeChildAt( 2 );
           this.addChild( allFliesCaught1 );
           this.addChild( allFliesCaught2 );
           console.log( 'Congratulations! You caught all of the flies!' );
@@ -824,15 +788,9 @@ class FrogPopulationScreenView extends ScreenView {
         this.addChild( flyCountStr );
         this.moveChildToIndex( flyCountStr, 0 );
         if ( flyCount === 1 ) {
-          this.addChild( keepGoing1 );
-          this.moveChildToIndex( keepGoing1, 1 );
-          this.addChild( keepGoing2 );
-          this.moveChildToIndex( keepGoing2, 2 );
           console.log( 'You have some flies left, keep going to catch them!' );
         }
         else if ( flyCount === 5 ) {
-          this.removeChildAt( 1 );
-          this.removeChildAt( 2 );
           this.addChild( allFliesCaught1 );
           this.addChild( allFliesCaught2 );
           console.log( 'Congratulations! You caught all of the flies!' );

@@ -18,8 +18,7 @@ class FrogPopulationNode extends Node {
 
     this.addChild( new Image( frogimg, {
       centerX: 0,
-      centerY: 0,
-      size: 20
+      centerY: 0
   } ) );
 
     const scaleX = modelViewTransform.modelToViewDeltaX( ModelImg.size.width ) / this.width;
